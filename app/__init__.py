@@ -7,6 +7,11 @@ from config import Config
 db = SQLAlchemy()
 login_manager = LoginManager()
 
+@login_manager.user_loader
+def load_user(user_id: str):
+    return None
+
+
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(Config)
