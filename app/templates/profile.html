@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Moj profil | Recepti{% endblock %}
+
+{% block content %}
+  <h1 class="h3">Moj profil</h1>
+  <p class="text-muted mb-0">Ulogiran si kao: <span class="fw-semibold">{{ current_user.username }}</span></p>
+{% endblock %}

@@ -22,14 +22,29 @@
           <ul class="navbar-nav ms-auto">
             <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Explore</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Register</a></li>
+
+            {% if current_user.is_authenticated %}
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('main.me') }}">Moj profil</a></li>
+              <li class="nav-item"><span class="nav-link disabled">@{{ current_user.username }}</span></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a></li>
+            {% else %}
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
+            {% endif %}
           </ul>
         </div>
       </div>
     </nav>
 
     <main class="container my-4">
+      {% with msgs = get_flashed_messages() %}
+        {% if msgs %}
+          <div class="alert alert-warning" role="alert">
+            {% for m in msgs %}<div>{{ m }}</div>{% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
       {% block content %}{% endblock %}
     </main>
 

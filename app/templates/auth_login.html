@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Login | Recepti{% endblock %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6 col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h1 class="h4 mb-3">Login</h1>
+
+          <form method="post" action="{{ url_for('auth.login') }}">
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <input class="form-control" name="username" autocomplete="username" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Lozinka</label>
+              <input class="form-control" name="password" type="password" autocomplete="current-password" required>
+            </div>
+
+            <button class="btn btn-primary w-100" type="submit">Prijavi se</button>
+          </form>
+
+          <div class="mt-3 text-center">
+            <a href="{{ url_for('auth.register') }}">Nemam račun</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
