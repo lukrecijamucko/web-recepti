@@ -1,3 +1,6 @@
+from .models import recipe_categories
+from flask import current_app
+from sqlalchemy.exc import OperationalError
 from flask import Blueprint, render_template
 from sqlalchemy import func
 from .models import Category, Recipe
@@ -12,17 +15,26 @@ def me():
 
 @main_bp.route("/")
 def index():
-    categories = Category.query.order_by(Category.id).limit(3).all()
-
     daily_picks = []
-    for c in categories:
-        r = (Recipe.query
-             .join(Recipe.categories)
-             .filter(Category.id == c.id)
-             .order_by(func.random())
-             .first())
+
+    try:
+        categories = Category.query.order_by(Category.id).limit(3).all()
+
+        for c in categories:
+            r = (
+            Recipe.query
+            .filter(Recipe.categories.any(id=c.id))
+            .order_by(func.random())
+            .first()
+        )
         if r:
             daily_picks.append({"title": r.title, "category": c.name})
 
-    return render_template("index.html", daily_picks=daily_picks)
+    except OperationalError:
+        pass
 
+    return render_template(
+        "index.html",
+        daily_picks=daily_picks,
+        db_uri=current_app.config.get("SQLALCHEMY_DATABASE_URI"),
+    )

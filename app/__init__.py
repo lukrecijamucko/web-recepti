@@ -15,7 +15,7 @@ login_manager = LoginManager()
 def load_user(user_id: str):
     from .models import User
     try:
-        return User.query.get(int(user_id))
+        return db.session.get(User, int(user_id))
     except (TypeError, ValueError):
         return None
 
@@ -24,16 +24,23 @@ def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(Config)
 
-    db_path = Path(app.config["DB_PATH"]).resolve()
+    os.makedirs(app.instance_path, exist_ok=True)
+
+    raw_db_path = app.config.get("DB_PATH", "app.db")
+    raw_db_path = Path(raw_db_path)
+
+    if raw_db_path.is_absolute():
+        db_path = raw_db_path
+    else:
+        db_path = Path(app.instance_path) / raw_db_path  
+
     db_path.parent.mkdir(parents=True, exist_ok=True)
+
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + db_path.as_posix()
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    os.makedirs(app.instance_path, exist_ok=True)
-
     db.init_app(app)
     login_manager.init_app(app)
-
     login_manager.login_view = "auth.login"
 
     from . import models  
@@ -46,5 +53,8 @@ def create_app():
 
     from .auth_routes import auth_bp
     app.register_blueprint(auth_bp)
+
+    from .recipes_routes import recipes_bp
+    app.register_blueprint(recipes_bp)
 
     return app

@@ -30,6 +30,13 @@ class Recipe(db.Model):
     instructions = db.Column(db.Text, default="", nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
-    author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+    ingredients = db.Column(db.Text, default="", nullable=False)
+    
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+
+    author = db.relationship("User", backref="recipes")
+
+    def __repr__(self):
+        return f"<Recipe id={self.id} title={self.title!r}>"
 
     categories = db.relationship("Category", secondary=recipe_categories, backref="recipes")
