@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 900px;">
+  <h1>{{ recipe.title }}</h1>
+  <p class="text-muted mb-2">
+    Autor: {{ recipe.author.username }} |
+    Kategorije:
+    {% for c in recipe.categories %}
+      {{ c.name }}{% if not loop.last %}, {% endif %}
+    {% endfor %}
+  </p>
+
+  {% if recipe.summary %}
+    <h5>Sažetak</h5>
+    <p>{{ recipe.summary }}</p>
+  {% endif %}
+
+  <h5>Sastojci</h5>
+  <pre style="white-space: pre-wrap;">{{ recipe.ingredients }}</pre>
+
+  <h5>Upute</h5>
+  <pre style="white-space: pre-wrap;">{{ recipe.instructions }}</pre>
+
+  <a class="btn btn-secondary mt-3" href="{{ url_for('recipes.list_recipes') }}">Natrag</a>
+</div>
+{% endblock %}

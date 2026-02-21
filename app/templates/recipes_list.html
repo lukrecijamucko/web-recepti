@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+<h1>Svi recepti</h1>
+
+<div class="mb-4">
+  <a class="btn btn-outline-secondary btn-sm"
+     href="{{ url_for('recipes.list_recipes') }}">
+     Sve
+  </a>
+
+  {% for c in categories %}
+    <a class="btn btn-sm {% if active_category == c.id %}btn-primary{% else %}btn-outline-primary{% endif %}"
+       href="{{ url_for('recipes.list_recipes', category=c.id) }}">
+       {{ c.name }}
+    </a>
+  {% endfor %}
+</div>
+
+{% for r in recipes %}
+  <div class="card mb-3 p-3">
+    <b>{{ r.title }}</b><br>
+    Autor: {{ r.author.username }}<br>
+    Kategorije:
+    {% for c in r.categories %}
+      {{ c.name }}{% if not loop.last %}, {% endif %}
+    {% endfor %}
+  </div>
+  
+  <a class="btn btn-sm btn-primary"
+    href="{{ url_for('recipes.recipe_detail', recipe_id=r.id) }}">
+    Otvori
+</a>
+{% endfor %}
+
+</div>
+{% endblock %}
